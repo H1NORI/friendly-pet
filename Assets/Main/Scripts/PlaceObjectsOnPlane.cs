@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
@@ -33,7 +34,7 @@ public class PlaceObjectsOnPlane : MonoBehaviour
     ARRaycastManager m_RaycastManager;
 
     static List<ARRaycastHit> s_Hits = new List<ARRaycastHit>();
-    
+
     [SerializeField]
     int m_MaxNumberOfObjectsToPlace = 1;
 
@@ -67,18 +68,26 @@ public class PlaceObjectsOnPlane : MonoBehaviour
 
                     if (m_NumberOfPlacedObjects < m_MaxNumberOfObjectsToPlace)
                     {
-                        spawnedObject = Instantiate(m_PlacedPrefab, hitPose.position, hitPose.rotation);
-                        
+                        spawnedObject = Instantiate(m_PlacedPrefab, hitPose.position, Quaternion.identity);
+                        Vector3 targetScale = m_PlacedPrefab.transform.localScale;
+                        spawnedObject.transform.localScale = Vector3.zero;
+                        FaceObjectToCamera(spawnedObject.transform);
+                        StartCoroutine(AnimateScaleIn(spawnedObject.transform, targetScale));
+
                         m_NumberOfPlacedObjects++;
                     }
                     else
                     {
                         if (m_CanReposition)
                         {
-                            spawnedObject.transform.SetPositionAndRotation(hitPose.position, hitPose.rotation);
+                            spawnedObject.transform.position = hitPose.position;
+                            Vector3 targetScale = m_PlacedPrefab.transform.localScale;
+                            spawnedObject.transform.localScale = Vector3.zero;
+                            FaceObjectToCamera(spawnedObject.transform);
+                            StartCoroutine(AnimateScaleIn(spawnedObject.transform, targetScale));
                         }
                     }
-                    
+
                     if (onPlacedObject != null)
                     {
                         onPlacedObject();
@@ -86,5 +95,33 @@ public class PlaceObjectsOnPlane : MonoBehaviour
                 }
             }
         }
+    }
+
+    void FaceObjectToCamera(Transform objTransform)
+    {
+        var cameraTransform = Camera.main.transform;
+        Vector3 directionToCamera = cameraTransform.position - objTransform.position;
+        directionToCamera.y = 0;
+        if (directionToCamera.sqrMagnitude > 0.001f)
+        {
+            objTransform.rotation = Quaternion.LookRotation(directionToCamera);
+        }
+    }
+    
+    IEnumerator AnimateScaleIn(Transform objTransform, Vector3 targetScale)
+    {
+        float duration = 0.3f;
+        float time = 0f;
+
+        while (time < duration)
+        {
+            float t = time / duration;
+            float smoothT = Mathf.SmoothStep(0, 1, t);
+            objTransform.localScale = Vector3.Lerp(Vector3.zero, targetScale, smoothT);
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        objTransform.localScale = targetScale;
     }
 }
