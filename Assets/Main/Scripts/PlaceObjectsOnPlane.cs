@@ -56,45 +56,50 @@ public class PlaceObjectsOnPlane : MonoBehaviour
 
     void Update()
     {
-        if (Input.touchCount > 0)
+        Vector2 inputPosition = default;
+        bool isInputTriggered = false;
+
+        // Check for touch input (mobile)
+        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
         {
-            Touch touch = Input.GetTouch(0);
+            inputPosition = Input.GetTouch(0).position;
+            isInputTriggered = true;
+        }// Check for mouse input (PC)
+        else if (Input.GetMouseButtonDown(0))
+        {
+            inputPosition = Input.mousePosition;
+            isInputTriggered = true;
+        }
 
-            if (touch.phase == TouchPhase.Began)
+        if (isInputTriggered)
+        {
+            if (m_RaycastManager.Raycast(inputPosition, s_Hits, TrackableType.PlaneWithinPolygon))
             {
-                if (m_RaycastManager.Raycast(touch.position, s_Hits, TrackableType.PlaneWithinPolygon))
+                Pose hitPose = s_Hits[0].pose;
+
+                if (m_NumberOfPlacedObjects < m_MaxNumberOfObjectsToPlace)
                 {
-                    Pose hitPose = s_Hits[0].pose;
+                    spawnedObject = Instantiate(m_PlacedPrefab, hitPose.position, Quaternion.identity);
+                    Vector3 targetScale = m_PlacedPrefab.transform.localScale;
+                    spawnedObject.transform.localScale = Vector3.zero;
+                    FaceObjectToCamera(spawnedObject.transform);
+                    StartCoroutine(AnimateScaleIn(spawnedObject.transform, targetScale));
 
-                    if (m_NumberOfPlacedObjects < m_MaxNumberOfObjectsToPlace)
-                    {
-                        spawnedObject = Instantiate(m_PlacedPrefab, hitPose.position, Quaternion.identity);
-                        Vector3 targetScale = m_PlacedPrefab.transform.localScale;
-                        spawnedObject.transform.localScale = Vector3.zero;
-                        FaceObjectToCamera(spawnedObject.transform);
-                        StartCoroutine(AnimateScaleIn(spawnedObject.transform, targetScale));
-
-                        m_NumberOfPlacedObjects++;
-                    }
-                    else
-                    {
-                        if (m_CanReposition)
-                        {
-                            spawnedObject.transform.position = hitPose.position;
-                            Vector3 targetScale = m_PlacedPrefab.transform.localScale;
-                            spawnedObject.transform.localScale = Vector3.zero;
-                            FaceObjectToCamera(spawnedObject.transform);
-                            StartCoroutine(AnimateScaleIn(spawnedObject.transform, targetScale));
-                        }
-                    }
-
-                    if (onPlacedObject != null)
-                    {
-                        onPlacedObject();
-                    }
+                    m_NumberOfPlacedObjects++;
                 }
+                else if (m_CanReposition)
+                {
+                    spawnedObject.transform.position = hitPose.position;
+                    Vector3 targetScale = m_PlacedPrefab.transform.localScale;
+                    spawnedObject.transform.localScale = Vector3.zero;
+                    FaceObjectToCamera(spawnedObject.transform);
+                    StartCoroutine(AnimateScaleIn(spawnedObject.transform, targetScale));
+                }
+
+                onPlacedObject?.Invoke();
             }
         }
+
     }
 
     void FaceObjectToCamera(Transform objTransform)
