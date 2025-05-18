@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
@@ -73,6 +74,11 @@ public class PlaceObjectsOnPlane : MonoBehaviour
 
         if (isInputTriggered)
         {
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                return;
+            }
+
             if (m_RaycastManager.Raycast(inputPosition, s_Hits, TrackableType.PlaneWithinPolygon))
             {
                 Pose hitPose = s_Hits[0].pose;

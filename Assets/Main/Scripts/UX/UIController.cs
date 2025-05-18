@@ -24,18 +24,30 @@ public class UIController : MonoBehaviour
     void Start()
     {
         petStateManager = FindObjectOfType<PetStateManager>();
-
-        HideAllPanels();
     }
 
     public void ShowFeedingUI()
     {
-        feedingPanel.SetActive(true);
+        Animator animator = feedingPanel.GetComponent<Animator>();
+        animator.SetTrigger("Activate");
     }
 
-    public void ShowPlayUI()
+    public void HideFeedingUI()
     {
-        activityPanel.SetActive(true);
+        Animator animator = feedingPanel.GetComponent<Animator>();
+        animator.SetTrigger("Disable");
+    }
+
+    public void ShowActivityUI()
+    {
+        Animator animator = activityPanel.GetComponent<Animator>();
+        animator.SetTrigger("Activate");
+    }
+
+        public void DisableActivityUI()
+    {
+        Animator animator = activityPanel.GetComponent<Animator>();
+        animator.SetTrigger("Disable");
     }
 
     public void HideAllPanels()
