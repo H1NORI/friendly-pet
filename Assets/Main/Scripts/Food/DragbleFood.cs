@@ -1,14 +1,16 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class DraggableFood : MonoBehaviour
 {
     public int hungerBonus;
-    public float throwForceMultiplier = 5f;
 
     private Camera cam;
     private Vector3 initialDragPosition;
     private Vector3 dragVelocity;
     private bool isHeld = true;
+    // private bool returningToCenter = false;
+    private Vector3 returnTargetPosition;
 
     private Rigidbody rb;
 
@@ -18,11 +20,33 @@ public class DraggableFood : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.useGravity = false; // Prevent dropping before release
         PositionInFrontOfCamera();
+        UIController uiController = FindObjectOfType<UIController>();
+        Debug.Log("UI controller");
+
+        uiController.LookAtFood(transform);
     }
 
     void Update()
     {
-        if (!isHeld) return;
+        // if (returningToCenter)
+        // {
+        //     transform.position = Vector3.Lerp(transform.position, returnTargetPosition, Time.deltaTime * 8f);
+        //     transform.LookAt(cam.transform);
+
+        //     if (Vector3.Distance(transform.position, returnTargetPosition) < 0.01f)
+        //     {
+        //         returningToCenter = false;
+        //         isHeld = true;
+        //     }
+
+        //     return;
+        // }
+
+        if (!isHeld)
+            return;
+
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+            return;
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -47,15 +71,25 @@ public class DraggableFood : MonoBehaviour
     void FollowCameraCenter()
     {
         Vector3 camForward = cam.transform.forward;
-        Vector3 targetPos = cam.transform.position + camForward * 1.0f + cam.transform.right * dragVelocity.x * 0.002f + cam.transform.up * dragVelocity.y * 0.002f;
+        Vector3 camRight = cam.transform.right;
+        Vector3 camUp = cam.transform.up;
+
+        Vector3 targetPos = cam.transform.position 
+            + camForward * 0.5f 
+            + camRight * dragVelocity.x * 0.0005f 
+            + camUp * (dragVelocity.y * 0.0005f - 0.1f);
+
         transform.position = Vector3.Lerp(transform.position, targetPos, Time.deltaTime * 8f);
-        transform.LookAt(cam.transform); // Optional: face the camera
+        transform.LookAt(cam.transform);
     }
 
     void PositionInFrontOfCamera()
     {
-        transform.position = cam.transform.position + cam.transform.forward * 1.5f;
-        transform.rotation = Quaternion.LookRotation(cam.transform.forward);
+        Vector3 camForward = cam.transform.forward;
+        Vector3 camUp = cam.transform.up;
+
+        transform.position = cam.transform.position + camForward * 1f - camUp * 0.1f;
+        transform.rotation = Quaternion.LookRotation(camForward);
     }
 
     void Release()
@@ -63,13 +97,34 @@ public class DraggableFood : MonoBehaviour
         isHeld = false;
         rb.useGravity = true;
         rb.isKinematic = false;
+
+        float minForceThreshold = 800f;
+        float maxForceCap = 5f;
+        float forceMagnitude = dragVelocity.magnitude;
+
+        Debug.Log(forceMagnitude);
+
+        if (forceMagnitude < minForceThreshold)
+        {
+            isHeld = true;
+            rb.isKinematic = true;
+            rb.useGravity = false;
+
+            // returningToCenter = true;
+            // returnTargetPosition = cam.transform.position + cam.transform.forward * 1.1f;
+            return;
+        }
+
+        forceMagnitude = Mathf.Min(forceMagnitude, maxForceCap);
+
         Vector3 throwDirection = cam.transform.forward + cam.transform.up * 0.2f;
-        rb.AddForce(throwDirection * dragVelocity.magnitude * throwForceMultiplier);
+        rb.AddForce(throwDirection.normalized * forceMagnitude, ForceMode.Impulse);
     }
+
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Pet")) // Or use a FeedZone
+        if (collision.gameObject.CompareTag("Pet"))
         {
             UIController.Instance.FeedPet(hungerBonus);
             Destroy(gameObject);

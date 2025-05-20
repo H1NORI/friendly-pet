@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 3126311724667816655}
   m_Layer: 0
   m_Name: HotDog
-  m_TagString: Untagged
+  m_TagString: Food
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -98,7 +98,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hungerBonus: 2
-  throwForceMultiplier: 2
 --- !u!54 &3126311724667816655
 Rigidbody:
   m_ObjectHideFlags: 0

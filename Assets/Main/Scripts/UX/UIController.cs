@@ -1,10 +1,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Animations.Rigging;
 
 public class UIController : MonoBehaviour
 {
     public static UIController Instance { get; private set; }
+
+    [Header("Buttons")]
+    public GameObject feedingButton;
+    public GameObject activityButton;
+    public GameObject cameraButton;
 
     [Header("Panels")]
     public GameObject feedingPanel;
@@ -22,8 +28,7 @@ public class UIController : MonoBehaviour
 
 
     private PetStateManager petStateManager;
-
-    public RectTransform feedZoneUI;
+    private GameObject spawnedFood;
 
 
     void Awake()
@@ -55,6 +60,20 @@ public class UIController : MonoBehaviour
         animator.SetTrigger("Disable");
     }
 
+    public void HideAllButtons()
+    {
+        feedingButton.SetActive(false);
+        activityButton.SetActive(false);
+        cameraButton.SetActive(false);
+    }
+
+    public void ShowAllButtons()
+    {
+        feedingButton.SetActive(true);
+        activityButton.SetActive(true);
+        cameraButton.SetActive(true);
+    }
+
     public void HideAllPanels()
     {
         feedingPanel.SetActive(false);
@@ -72,10 +91,10 @@ public class UIController : MonoBehaviour
 
             button.onClick.AddListener(() =>
             {
+                HideFeedingUI();
+                ShowAllButtons();
                 ShowFood(food);
             });
-
-            Debug.Log("Event added");
         }
 
         RectTransform rectTransform = foodButtonContainer.GetComponent<RectTransform>();
@@ -84,18 +103,43 @@ public class UIController : MonoBehaviour
         rectTransform.anchoredPosition = anchoredPos;
     }
 
+    public void LookAtFood(Transform food)
+    {
+        MultiAimConstraint multiAimConstraint = FindObjectOfType<MultiAimConstraint>();
+        RigBuilder rigBuilder = FindObjectOfType<RigBuilder>();
+
+        if (multiAimConstraint == null || food == null || rigBuilder == null)
+        {
+            Debug.LogWarning("Constraint or target is missing.");
+            return;
+        }
+
+        WeightedTransformArray sources = new WeightedTransformArray();
+        sources.Add(new WeightedTransform(food, 1f));
+
+        multiAimConstraint.data.sourceObjects = sources;
+        multiAimConstraint.weight = 1f;
+        rigBuilder.Build();
+
+        Debug.Log("we found multiAimConstraint");
+
+    }
+
+
     private void ShowFood(FoodItem food)
     {
         petStateManager = FindObjectOfType<PetStateManager>();
 
+        if (spawnedFood != null)
+        {
+            Destroy(spawnedFood);
+        }
+
         if (petStateManager != null)
         {
-            Debug.Log("petStateManager exists");
-
             if (food.prefab != null)
             {
-                Debug.Log("food prefab exists");
-                Instantiate(food.prefab, petStateManager.transform.position + Vector3.forward, Quaternion.identity);
+                spawnedFood = Instantiate(food.prefab, petStateManager.transform.position + Vector3.forward, Quaternion.identity);
             }
         }
     }
@@ -108,11 +152,5 @@ public class UIController : MonoBehaviour
         {
             petStateManager.IncreaseHunger(hungerBonus);
         }
-    }
-
-    public bool IsInFeedZone(Vector3 worldPos)
-    {
-        Vector2 screenPos = Camera.main.WorldToScreenPoint(worldPos);
-        return RectTransformUtility.RectangleContainsScreenPoint(feedZoneUI, screenPos);
     }
 }
