@@ -51,7 +51,7 @@ public class PetStateManager : MonoBehaviour
         Sleepiness = Mathf.Max(0, Sleepiness - (statDecayRate / 60f));
         Happiness = Mathf.Max(0, Happiness - (statDecayRate / 60f));
 
-        Debug.Log(Hunger);
+        // Debug.Log(Hunger);
 
         OnHungerChanged?.Invoke(Hunger);
         OnSleepinessChanged?.Invoke(Sleepiness);
@@ -77,5 +77,17 @@ public class PetStateManager : MonoBehaviour
         Happiness = Mathf.Min(100f, Happiness + amount);
         OnHappinessChanged?.Invoke(Happiness);
         ChangeState(idleState); // temporary: may have PlayState later
+    }
+
+    public void IncreaseHunger(int hungerBonus)
+    {
+        if (Hunger + hungerBonus > 100)
+        {
+            Hunger = 100;
+        }
+        else
+        {
+            Hunger += hungerBonus;
+        }
     }
 }

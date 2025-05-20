@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
@@ -13,17 +15,20 @@ public class UIController : MonoBehaviour
     // public Slider sleepSlider;
     // public Slider happinessSlider;
 
+    [Header("Feeding Items")]
+    public List<FoodItem> foodItems;
+    public GameObject foodButtonPrefab;
+    public Transform foodButtonContainer;
+
+
     private PetStateManager petStateManager;
+
+    public RectTransform feedZoneUI;
+
 
     void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
-    }
-
-    void Start()
-    {
-        petStateManager = FindObjectOfType<PetStateManager>();
+        PopulateFeedingUI();
     }
 
     public void ShowFeedingUI()
@@ -56,21 +61,58 @@ public class UIController : MonoBehaviour
         activityPanel.SetActive(false);
     }
 
-    // public void UpdateStats(float hunger, float sleep, float happiness)
-    // {
-    //     hungerSlider.value = hunger;
-    //     sleepSlider.value = sleep;
-    //     happinessSlider.value = happiness;
-    // }
+    private void PopulateFeedingUI()
+    {
+        foreach (var food in foodItems)
+        {
+            GameObject buttonObj = Instantiate(foodButtonPrefab, foodButtonContainer);
+            Button button = buttonObj.GetComponent<Button>();
+            Image icon = buttonObj.GetComponent<Image>();
+            icon.sprite = food.icon;
 
-    // Button click hooks:
-    // public void OnFeedBerry(int berryIndex)
-    // {
-    //     PetStateManager.Instance.TryFeedPet(berryIndex); // Tell manager to handle feeding logic
-    // }
+            button.onClick.AddListener(() =>
+            {
+                ShowFood(food);
+            });
 
-    // public void OnPlayWithToy(int toyIndex)
-    // {
-    //     PetStateManager.Instance.TryPlayWithPet(toyIndex);
-    // }
+            Debug.Log("Event added");
+        }
+
+        RectTransform rectTransform = foodButtonContainer.GetComponent<RectTransform>();
+        Vector2 anchoredPos = rectTransform.anchoredPosition;
+        anchoredPos.x = -10000f;
+        rectTransform.anchoredPosition = anchoredPos;
+    }
+
+    private void ShowFood(FoodItem food)
+    {
+        petStateManager = FindObjectOfType<PetStateManager>();
+
+        if (petStateManager != null)
+        {
+            Debug.Log("petStateManager exists");
+
+            if (food.prefab != null)
+            {
+                Debug.Log("food prefab exists");
+                Instantiate(food.prefab, petStateManager.transform.position + Vector3.forward, Quaternion.identity);
+            }
+        }
+    }
+
+    public void FeedPet(int hungerBonus)
+    {
+        petStateManager = FindObjectOfType<PetStateManager>();
+
+        if (petStateManager != null)
+        {
+            petStateManager.IncreaseHunger(hungerBonus);
+        }
+    }
+
+    public bool IsInFeedZone(Vector3 worldPos)
+    {
+        Vector2 screenPos = Camera.main.WorldToScreenPoint(worldPos);
+        return RectTransformUtility.RectangleContainsScreenPoint(feedZoneUI, screenPos);
+    }
 }
