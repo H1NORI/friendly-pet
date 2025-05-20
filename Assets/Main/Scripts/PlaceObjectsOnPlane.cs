@@ -118,7 +118,7 @@ public class PlaceObjectsOnPlane : MonoBehaviour
             objTransform.rotation = Quaternion.LookRotation(directionToCamera);
         }
     }
-    
+
     IEnumerator AnimateScaleIn(Transform objTransform, Vector3 targetScale)
     {
         float duration = 0.3f;
@@ -135,4 +135,22 @@ public class PlaceObjectsOnPlane : MonoBehaviour
 
         objTransform.localScale = targetScale;
     }
+    
+    public void RemovePlacedObject()
+    {
+        if (spawnedObject != null)
+        {
+            Destroy(spawnedObject);
+            spawnedObject = null;
+            m_NumberOfPlacedObjects = 0;
+
+            UIManager uiManager = FindObjectOfType<UIManager>();
+            if (uiManager != null)
+            {
+                uiManager.TestFlipPlacementBool();
+                uiManager.AddToQueue(new UXHandle(UIManager.InstructionUI.TapToPlace, UIManager.InstructionGoals.PlacedAnObject));
+            }
+        }
+    }
+
 }

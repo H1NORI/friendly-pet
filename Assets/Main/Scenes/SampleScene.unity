@@ -3866,7 +3866,7 @@ MonoBehaviour:
   m_PlacedPrefab: {fileID: 4020983980232809014, guid: 9fedecbd1aa68924b816f15cb97e611a,
     type: 3}
   m_MaxNumberOfObjectsToPlace: 1
-  m_CanReposition: 1
+  m_CanReposition: 0
 --- !u!1 &2012186997
 GameObject:
   m_ObjectHideFlags: 0
