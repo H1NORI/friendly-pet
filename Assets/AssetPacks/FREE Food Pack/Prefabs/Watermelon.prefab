@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 23000014034575758}
   - component: {fileID: 6192250969272565589}
   - component: {fileID: 3999477750770741351}
+  - component: {fileID: 7362067434864090342}
   m_Layer: 0
   m_Name: Watermelon
   m_TagString: Food
@@ -125,3 +126,24 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!65 &7362067434864090342
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000011216760202}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.18452698, y: 0.09238921, z: 0.057187498}
+  m_Center: {x: 0, y: 0.0000000037252903, z: 0}

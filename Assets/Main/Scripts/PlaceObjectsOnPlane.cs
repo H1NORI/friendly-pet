@@ -55,6 +55,14 @@ public class PlaceObjectsOnPlane : MonoBehaviour
         m_RaycastManager = GetComponent<ARRaycastManager>();
     }
 
+    void Start()
+    {
+        if (spawnedObject != null)
+        {
+            spawnedObject.SetActive(false);
+        }
+    }
+
     void Update()
     {
         Vector2 inputPosition = default;
@@ -85,7 +93,10 @@ public class PlaceObjectsOnPlane : MonoBehaviour
 
                 if (m_NumberOfPlacedObjects < m_MaxNumberOfObjectsToPlace)
                 {
-                    spawnedObject = Instantiate(m_PlacedPrefab, hitPose.position, Quaternion.identity);
+                    spawnedObject = m_PlacedPrefab;
+                    spawnedObject.SetActive(true);
+                    spawnedObject.transform.position = hitPose.position;
+
                     Vector3 targetScale = m_PlacedPrefab.transform.localScale;
                     spawnedObject.transform.localScale = Vector3.zero;
                     FaceObjectToCamera(spawnedObject.transform);
@@ -140,13 +151,14 @@ public class PlaceObjectsOnPlane : MonoBehaviour
     {
         if (spawnedObject != null)
         {
-            Destroy(spawnedObject);
+            spawnedObject.SetActive(false);
             spawnedObject = null;
             m_NumberOfPlacedObjects = 0;
 
             UIManager uiManager = FindObjectOfType<UIManager>();
             if (uiManager != null)
             {
+                // TODO - rework logic for displaying UI one more time
                 uiManager.TestFlipPlacementBool();
                 uiManager.AddToQueue(new UXHandle(UIManager.InstructionUI.TapToPlace, UIManager.InstructionGoals.PlacedAnObject));
             }

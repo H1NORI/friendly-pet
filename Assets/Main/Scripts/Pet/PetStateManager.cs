@@ -1,26 +1,35 @@
 using System;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 public class PetStateManager : MonoBehaviour
 {
-    [Header("Pet Stats")]
+    public static PetStateManager Instance { get; private set; }
+
+    [Header("Stats")]
     [Range(0, 100)] public float Hunger = 100f;
     [Range(0, 100)] public float Sleepiness = 100f;
     [Range(0, 100)] public float Happiness = 100f;
 
     public float statDecayRate = 5f; // per minute
-    public event Action<float> OnHungerChanged;
-    public event Action<float> OnSleepinessChanged;
-    public event Action<float> OnHappinessChanged;
 
+    [Header("States")]
     private IPetState currentState;
-    public IdleState idleState = new IdleState();
-    public HungryState hungryState = new HungryState();
-    public EatingState eatingState = new EatingState();
-    public SleepyState sleepyState = new SleepyState();
-    public SleepingState sleepingState = new SleepingState();
+    public IdleState idleState { get; private set; } = new IdleState();
+    public HungryState hungryState { get; private set; } = new HungryState();
+    public EatingState eatingState { get; private set; } = new EatingState();
+    public SleepyState sleepyState { get; private set; } = new SleepyState();
+    public SleepingState sleepingState { get; private set; } = new SleepingState();
 
     private float statTimer;
+
+    private MultiAimConstraint multiAimConstraint = FindObjectOfType<MultiAimConstraint>();
+    private RigBuilder rigBuilder = FindObjectOfType<RigBuilder>();
+
+    void Awake()
+    {
+        Instance = this;
+    }
 
     void Start()
     {
@@ -30,17 +39,19 @@ public class PetStateManager : MonoBehaviour
     void Update()
     {
         statTimer += Time.deltaTime;
-        if (statTimer >= 1f) // Every second
+        if (statTimer >= 1f)
         {
             UpdateStats();
+            UIController.Instance.UpdateAllProgressBars();
             statTimer = 0f;
         }
+
         currentState.UpdateState(this);
     }
 
     public void ChangeState(IPetState newState)
     {
-        currentState?.ExitState(this);
+        currentState.ExitState(this);
         currentState = newState;
         currentState.EnterState(this);
     }
@@ -50,33 +61,26 @@ public class PetStateManager : MonoBehaviour
         Hunger = Mathf.Max(0, Hunger - (statDecayRate / 60f));
         Sleepiness = Mathf.Max(0, Sleepiness - (statDecayRate / 60f));
         Happiness = Mathf.Max(0, Happiness - (statDecayRate / 60f));
-
-        // Debug.Log(Hunger);
-
-        OnHungerChanged?.Invoke(Hunger);
-        OnSleepinessChanged?.Invoke(Sleepiness);
-        OnHappinessChanged?.Invoke(Happiness);
     }
 
     public void Feed(float amount)
     {
         Hunger = Mathf.Min(100f, Hunger + amount);
-        OnHungerChanged?.Invoke(Hunger);
         ChangeState(eatingState);
+        UIController.Instance.UpdateAllProgressBars();
     }
 
     public void Sleep(float amount)
     {
         Sleepiness = Mathf.Min(100f, Sleepiness + amount);
-        OnSleepinessChanged?.Invoke(Sleepiness);
         ChangeState(sleepingState);
     }
 
     public void Play(float amount)
     {
         Happiness = Mathf.Min(100f, Happiness + amount);
-        OnHappinessChanged?.Invoke(Happiness);
-        ChangeState(idleState); // temporary: may have PlayState later
+        ChangeState(idleState); // todo: may have PlayState later
+        UIController.Instance.UpdateAllProgressBars();
     }
 
     public void IncreaseHunger(int hungerBonus)
@@ -89,5 +93,28 @@ public class PetStateManager : MonoBehaviour
         {
             Hunger += hungerBonus;
         }
+    }
+
+
+    public void LookAtFood(Transform food)
+    {
+        if (multiAimConstraint == null || rigBuilder == null)
+        {
+            Debug.LogWarning("Constraint or target is missing.");
+            return;
+        }
+
+        multiAimConstraint.data.sourceObjects = functionGetSources(food);
+        multiAimConstraint.weight = 1f;
+        rigBuilder.Build();
+
+        Debug.Log("we found multiAimConstraint");
+    }
+
+    public WeightedTransformArray functionGetSources(Transform target)
+    {
+        WeightedTransformArray sources = new WeightedTransformArray();
+        sources.Add(new WeightedTransform(target, 1f));
+        return sources;
     }
 }

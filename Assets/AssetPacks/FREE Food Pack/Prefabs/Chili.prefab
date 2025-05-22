@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 23000010489384052}
   - component: {fileID: -7307068921103386286}
   - component: {fileID: 157423962414606892}
+  - component: {fileID: -8603333767993351574}
   m_Layer: 0
   m_Name: Chili
   m_TagString: Food
@@ -125,3 +126,24 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!65 &-8603333767993351574
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000014236023566}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.21001892, y: 0.04433389, z: 0.12954539}
+  m_Center: {x: 0, y: -0.000000009313226, z: -0.000000011175871}

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 23000010713568166}
   - component: {fileID: -5451567100382353017}
   - component: {fileID: -7862660186311004426}
+  - component: {fileID: 3870883597737870296}
   m_Layer: 0
   m_Name: Rice_Bowl
   m_TagString: Food
@@ -125,3 +126,24 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!65 &3870883597737870296
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000013397514734}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.10833008, y: 0.0832994, z: 0.103027984}
+  m_Center: {x: 0, y: 0.000000007450581, z: -0.0000000037252903}

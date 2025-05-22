@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Animations.Rigging;
 
 public class UIController : MonoBehaviour
 {
@@ -16,10 +15,9 @@ public class UIController : MonoBehaviour
     public GameObject feedingPanel;
     public GameObject activityPanel;
 
-    // [Header("Stat UI")]
-    // public Slider hungerSlider;
-    // public Slider sleepSlider;
-    // public Slider happinessSlider;
+    [Header("Bars")]
+    public Slider hungerBar;
+    public Slider happinessBar;
 
     [Header("Feeding Items")]
     public List<FoodItem> foodItems;
@@ -27,10 +25,7 @@ public class UIController : MonoBehaviour
     public Transform foodButtonContainer;
 
     public GameObject feedingCancelZone;
-    // public Image feedingCancelZoneImage;
 
-
-    private PetStateManager petStateManager;
     private GameObject spawnedFood;
 
 
@@ -103,6 +98,22 @@ public class UIController : MonoBehaviour
         activityPanel.SetActive(false);
     }
 
+    public void UpdateHungerProgressBars()
+    {
+        hungerBar.value = PetStateManager.Instance.Hunger;
+    }
+
+    public void UpdateHappinessProgressBars()
+    {
+        happinessBar.value = PetStateManager.Instance.Happiness;
+    }
+
+    public void UpdateAllProgressBars()
+    {
+        UpdateHungerProgressBars();
+        UpdateHappinessProgressBars();
+    }
+
     private void PopulateFeedingUI()
     {
         foreach (var food in foodItems)
@@ -127,43 +138,15 @@ public class UIController : MonoBehaviour
         rectTransform.anchoredPosition = anchoredPos;
     }
 
-    public void LookAtFood(Transform food)
-    {
-        MultiAimConstraint multiAimConstraint = FindObjectOfType<MultiAimConstraint>();
-        RigBuilder rigBuilder = FindObjectOfType<RigBuilder>();
-
-        if (multiAimConstraint == null || rigBuilder == null)
-        {
-            Debug.LogWarning("Constraint or target is missing.");
-            return;
-        }
-
-        multiAimConstraint.data.sourceObjects = functionGetSources(food);
-        multiAimConstraint.weight = 1f;
-        rigBuilder.Build();
-
-        Debug.Log("we found multiAimConstraint");
-    }
-
-    public WeightedTransformArray functionGetSources(Transform target)
-    {
-        WeightedTransformArray sources = new WeightedTransformArray();
-        sources.Add(new WeightedTransform(target, 1f));
-        return sources;
-    }
-
-
     private void ShowFood(FoodItem food)
     {
-        petStateManager = FindObjectOfType<PetStateManager>();
-
         HideFood();
 
-        if (petStateManager != null)
+        if (PetStateManager.Instance != null)
         {
             if (food.prefab != null)
             {
-                spawnedFood = Instantiate(food.prefab, petStateManager.transform.position + Vector3.forward, Quaternion.identity);
+                spawnedFood = Instantiate(food.prefab, PetStateManager.Instance.transform.position + Vector3.forward, Quaternion.identity);
             }
         }
     }
@@ -172,28 +155,16 @@ public class UIController : MonoBehaviour
     {
         if (spawnedFood != null)
         {
-            LookAtFood(null);
+            PetStateManager.Instance.LookAtFood(null);
             Destroy(spawnedFood);
         }
     }
 
     public void FeedPet(int hungerBonus)
     {
-        petStateManager = FindObjectOfType<PetStateManager>();
-
-        if (petStateManager != null)
+        if (PetStateManager.Instance != null)
         {
-            petStateManager.IncreaseHunger(hungerBonus);
+            PetStateManager.Instance.IncreaseHunger(hungerBonus);
         }
     }
-
-    // public bool IsPointerOverCancelZone(Vector2 screenPosition)
-    // {
-    //     return RectTransformUtility.RectangleContainsScreenPoint(feedingCancelZone, screenPosition, Camera.main);
-    // }
-    
-    // public void CancelZoneDragged(int hungerBonus)
-    // {
-
-    // }
 }

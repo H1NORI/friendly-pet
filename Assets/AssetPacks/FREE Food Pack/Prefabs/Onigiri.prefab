@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 23000014138272178}
   - component: {fileID: 4491134241729824139}
   - component: {fileID: 5512364528772510290}
+  - component: {fileID: -6765411945233305412}
   m_Layer: 0
   m_Name: Onigiri
   m_TagString: Food
@@ -125,3 +126,24 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!65 &-6765411945233305412
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000013051596076}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.0903772, y: 0.081848435, z: 0.02954558}
+  m_Center: {x: 0, y: 0, z: 0.0000000023283064}

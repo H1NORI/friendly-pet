@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 23000014036474788}
   - component: {fileID: 1630294837986736891}
   - component: {fileID: -8521375800207938837}
+  - component: {fileID: 6907669415099651595}
   m_Layer: 0
   m_Name: Tempura
   m_TagString: Food
@@ -125,3 +126,24 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!65 &6907669415099651595
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000012244298164}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.12740356, y: 0.13408229, z: 0.05069668}
+  m_Center: {x: 0, y: -0.0000000037252903, z: 0.000000011175871}

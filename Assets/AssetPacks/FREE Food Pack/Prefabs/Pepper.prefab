@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 23000011745305564}
   - component: {fileID: 8623747075253065815}
   - component: {fileID: 5555795549499997386}
+  - component: {fileID: 658468146735661856}
   m_Layer: 0
   m_Name: Pepper
   m_TagString: Food
@@ -125,3 +126,24 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!65 &658468146735661856
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000013741648814}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.03968811, y: 0.16492105, z: 0.03032379}
+  m_Center: {x: 0, y: 0, z: 0}

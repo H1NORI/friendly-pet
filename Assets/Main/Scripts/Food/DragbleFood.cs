@@ -9,14 +9,11 @@ public class DraggableFood : MonoBehaviour
     private Vector3 initialDragPosition;
     private Vector3 dragVelocity;
     private bool isHeld = true;
-    // private bool returningToCenter = false;
-    // private Vector3 returnTargetPosition;
 
     private Rigidbody rb;
 
     private float returnDelay = 2.5f;
     private bool hasBeenThrown = false;
-    // private bool isOverCancelZone = false;
 
     void Start()
     {
@@ -26,25 +23,11 @@ public class DraggableFood : MonoBehaviour
         PositionInFrontOfCamera();
         Debug.Log("UI controller");
 
-        UIController.Instance.LookAtFood(transform);
+        PetStateManager.Instance.LookAtFood(transform);
     }
 
     void Update()
     {
-        // if (returningToCenter)
-        // {
-        //     transform.position = Vector3.Lerp(transform.position, returnTargetPosition, Time.deltaTime * 8f);
-        //     transform.LookAt(cam.transform);
-
-        //     if (Vector3.Distance(transform.position, returnTargetPosition) < 0.01f)
-        //     {
-        //         returningToCenter = false;
-        //         isHeld = true;
-        //     }
-
-        //     return;
-        // }
-
         if (!isHeld)
             return;
 
@@ -56,8 +39,6 @@ public class DraggableFood : MonoBehaviour
             initialDragPosition = Input.mousePosition;
         }
         
-        // isOverCancelZone = UIController.Instance.IsPointerOverCancelZone(Input.mousePosition);
-
         if (Input.GetMouseButton(0))
         {
             Vector3 current = Input.mousePosition;
@@ -114,9 +95,6 @@ public class DraggableFood : MonoBehaviour
             isHeld = true;
             rb.isKinematic = true;
             rb.useGravity = false;
-
-            // returningToCenter = true;
-            // returnTargetPosition = cam.transform.position + cam.transform.forward * 1.1f;
             return;
         }
 
@@ -136,6 +114,7 @@ public class DraggableFood : MonoBehaviour
         {
             hasBeenThrown = false;
             UIController.Instance.FeedPet(hungerBonus);
+            PetStateManager.Instance.LookAtFood(null);
             Destroy(gameObject);
         }
     }
