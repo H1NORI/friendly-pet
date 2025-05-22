@@ -10,9 +10,13 @@ public class DraggableFood : MonoBehaviour
     private Vector3 dragVelocity;
     private bool isHeld = true;
     // private bool returningToCenter = false;
-    private Vector3 returnTargetPosition;
+    // private Vector3 returnTargetPosition;
 
     private Rigidbody rb;
+
+    private float returnDelay = 2.5f;
+    private bool hasBeenThrown = false;
+    // private bool isOverCancelZone = false;
 
     void Start()
     {
@@ -20,10 +24,9 @@ public class DraggableFood : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.useGravity = false; // Prevent dropping before release
         PositionInFrontOfCamera();
-        UIController uiController = FindObjectOfType<UIController>();
         Debug.Log("UI controller");
 
-        uiController.LookAtFood(transform);
+        UIController.Instance.LookAtFood(transform);
     }
 
     void Update()
@@ -52,6 +55,8 @@ public class DraggableFood : MonoBehaviour
         {
             initialDragPosition = Input.mousePosition;
         }
+        
+        // isOverCancelZone = UIController.Instance.IsPointerOverCancelZone(Input.mousePosition);
 
         if (Input.GetMouseButton(0))
         {
@@ -74,9 +79,9 @@ public class DraggableFood : MonoBehaviour
         Vector3 camRight = cam.transform.right;
         Vector3 camUp = cam.transform.up;
 
-        Vector3 targetPos = cam.transform.position 
-            + camForward * 0.5f 
-            + camRight * dragVelocity.x * 0.0005f 
+        Vector3 targetPos = cam.transform.position
+            + camForward * 0.5f
+            + camRight * dragVelocity.x * 0.0005f
             + camUp * (dragVelocity.y * 0.0005f - 0.1f);
 
         transform.position = Vector3.Lerp(transform.position, targetPos, Time.deltaTime * 8f);
@@ -119,6 +124,9 @@ public class DraggableFood : MonoBehaviour
 
         Vector3 throwDirection = cam.transform.forward + cam.transform.up * 0.2f;
         rb.AddForce(throwDirection.normalized * forceMagnitude, ForceMode.Impulse);
+
+        hasBeenThrown = true;
+        StartCoroutine(ReturnIfNotCollided());
     }
 
 
@@ -126,8 +134,28 @@ public class DraggableFood : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Pet"))
         {
+            hasBeenThrown = false;
             UIController.Instance.FeedPet(hungerBonus);
             Destroy(gameObject);
+        }
+    }
+    
+    private System.Collections.IEnumerator ReturnIfNotCollided()
+    {
+        yield return new WaitForSeconds(returnDelay);
+
+        if (hasBeenThrown)
+        {
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            rb.isKinematic = true;
+            rb.useGravity = false;
+
+            transform.position = cam.transform.position + cam.transform.forward * 1f - cam.transform.up * 0.1f;
+            transform.rotation = Quaternion.LookRotation(cam.transform.forward);
+
+            isHeld = true;
+            hasBeenThrown = false;
         }
     }
 }
