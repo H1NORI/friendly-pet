@@ -18,15 +18,23 @@ public class UIController : MonoBehaviour
     [Header("Bars")]
     public Slider hungerBar;
     public Slider happinessBar;
+    public Slider activityBar;
+
 
     [Header("Feeding Items")]
     public List<FoodItem> foodItems;
     public GameObject foodButtonPrefab;
     public Transform foodButtonContainer;
-
     public GameObject feedingCancelZone;
-
     private GameObject spawnedFood;
+
+    [Header("Activity Items")]
+    public List<ActivityItem> activityItems;
+    public GameObject activityButtonPrefab;
+    public Transform activityButtonContainer;
+    public GameObject activityCancelZone;
+    public SliderController activitySliderController;
+
 
 
     void Awake()
@@ -40,6 +48,7 @@ public class UIController : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         PopulateFeedingUI();
+        PopulateActivityUI();
     }
 
     public void ShowFeedingUI()
@@ -60,6 +69,12 @@ public class UIController : MonoBehaviour
         animator.SetTrigger("Activate");
     }
 
+        public void HideActivityUI()
+    {
+        Animator animator = activityPanel.GetComponent<Animator>();
+        animator.SetTrigger("Disable");
+    }
+
     public void DisableActivityUI()
     {
         Animator animator = activityPanel.GetComponent<Animator>();
@@ -75,6 +90,18 @@ public class UIController : MonoBehaviour
     public void ShowFeedingCancelZoneUI()
     {
         Animator animator = feedingCancelZone.GetComponent<Animator>();
+        animator.SetTrigger("Activate");
+    }
+
+    public void HideActivityCancelZoneUI()
+    {
+        Animator animator = activityCancelZone.GetComponent<Animator>();
+        animator.SetTrigger("Disable");
+    }
+
+    public void ShowActivityCancelZoneUI()
+    {
+        Animator animator = activityCancelZone.GetComponent<Animator>();
         animator.SetTrigger("Activate");
     }
 
@@ -135,6 +162,28 @@ public class UIController : MonoBehaviour
         RectTransform rectTransform = foodButtonContainer.GetComponent<RectTransform>();
         Vector2 anchoredPos = rectTransform.anchoredPosition;
         anchoredPos.x = -10000f;
+        rectTransform.anchoredPosition = anchoredPos;
+    }
+
+    private void PopulateActivityUI()
+    {
+        foreach (var activity in activityItems)
+        {
+            GameObject buttonObj = Instantiate(activityButtonPrefab, activityButtonContainer);
+            Button button = buttonObj.GetComponent<Button>();
+            Image icon = buttonObj.GetComponent<Image>();
+            icon.sprite = activity.icon;
+
+            button.onClick.AddListener(() =>
+            {
+                HideActivityUI();
+                ShowActivityCancelZoneUI();
+            });
+        }
+
+        RectTransform rectTransform = foodButtonContainer.GetComponent<RectTransform>();
+        Vector2 anchoredPos = rectTransform.anchoredPosition;
+        anchoredPos.x = 10000f;
         rectTransform.anchoredPosition = anchoredPos;
     }
 

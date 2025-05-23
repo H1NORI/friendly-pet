@@ -996,10 +996,11 @@ GameObject:
   m_Component:
   - component: {fileID: 4361374554138886284}
   - component: {fileID: 7666986768240843510}
-  - component: {fileID: 6926402576394734159}
-  - component: {fileID: 557761436883681632}
   - component: {fileID: 6571376195649226999}
   - component: {fileID: 8807398287780258314}
+  - component: {fileID: 557761436883681632}
+  - component: {fileID: 6926402576394734159}
+  - component: {fileID: 6453427472456310257}
   m_Layer: 0
   m_Name: Fox
   m_TagString: Pet
@@ -1047,43 +1048,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &6926402576394734159
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4020983980232809014}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e5dd61d2c68c74eb9a2584cbb9ac2150, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Hunger: 31.6
-  Sleepiness: 100
-  Happiness: 100
-  statDecayRate: 5
---- !u!65 &557761436883681632
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4020983980232809014}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1.2, z: 2}
-  m_Center: {x: 0, y: 0.74, z: 0}
 --- !u!114 &6571376195649226999
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1158,6 +1122,57 @@ MonoBehaviour:
   - m_Rig: {fileID: 5523671709497855397}
     m_Active: 1
   m_Effectors: []
+--- !u!65 &557761436883681632
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4020983980232809014}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1.2, z: 2}
+  m_Center: {x: 0, y: 0.74, z: 0}
+--- !u!114 &6926402576394734159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4020983980232809014}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5dd61d2c68c74eb9a2584cbb9ac2150, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Hunger: 31.6
+  Sleepiness: 100
+  Happiness: 100
+  statDecayRate: 5
+--- !u!114 &6453427472456310257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4020983980232809014}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be74ccb8058b8441f9c02e622901942b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pettingParticlePrefab: {fileID: 1178894326743412, guid: 042f756de00cb5b4db4d23471365bf39,
+    type: 3}
 --- !u!1 &4246927435662846628
 GameObject:
   m_ObjectHideFlags: 0

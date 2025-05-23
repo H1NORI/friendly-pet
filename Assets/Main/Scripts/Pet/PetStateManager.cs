@@ -23,8 +23,8 @@ public class PetStateManager : MonoBehaviour
 
     private float statTimer;
 
-    private MultiAimConstraint multiAimConstraint = FindObjectOfType<MultiAimConstraint>();
-    private RigBuilder rigBuilder = FindObjectOfType<RigBuilder>();
+    private MultiAimConstraint multiAimConstraint;
+    private RigBuilder rigBuilder;
 
     void Awake()
     {
@@ -34,6 +34,9 @@ public class PetStateManager : MonoBehaviour
     void Start()
     {
         ChangeState(idleState);
+ 
+        multiAimConstraint = FindObjectOfType<MultiAimConstraint>();
+        rigBuilder = GetComponent<RigBuilder>();
     }
 
     void Update()
@@ -51,7 +54,9 @@ public class PetStateManager : MonoBehaviour
 
     public void ChangeState(IPetState newState)
     {
-        currentState.ExitState(this);
+        if (currentState != null)
+            currentState.ExitState(this);
+        
         currentState = newState;
         currentState.EnterState(this);
     }
