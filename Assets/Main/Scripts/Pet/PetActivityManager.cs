@@ -15,22 +15,23 @@ public class PetActivityManager : MonoBehaviour
 
     private void Start()
     {
-        ChangeActivity(new PettingActivity());
+        ChangeActivity(null);
     }
 
     void Update()
     {
-        currentActivity.UpdateActivity(PetStateManager.Instance);
+        if (currentActivity != null)
+            currentActivity.UpdateActivity(PetStateManager.Instance);
     }
 
     public void ChangeActivity(IPetActivity newActivity)
     {
         if (currentActivity != null)
-        {
             currentActivity.EndActivity(PetStateManager.Instance);
-        }
 
         currentActivity = newActivity;
-        currentActivity.StartActivity(PetStateManager.Instance);
+
+        if (currentActivity != null)
+            currentActivity.StartActivity(PetStateManager.Instance);
     }
 }

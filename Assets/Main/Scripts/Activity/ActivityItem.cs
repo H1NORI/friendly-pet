@@ -5,5 +5,12 @@ public class ActivityItem
 {
     public string name;
     public Sprite icon;
-    public GameObject prefab;
+    public enum Activity
+    {
+        PettingActivity,
+        BrushActivity,
+        None
+    };
+
+    public Activity activity;
 }

@@ -75,9 +75,15 @@ public class UIController : MonoBehaviour
         animator.SetTrigger("Disable");
     }
 
-    public void DisableActivityUI()
+    public void ShowActivityBarUI()
     {
-        Animator animator = activityPanel.GetComponent<Animator>();
+        Animator animator = activityBar.GetComponent<Animator>();
+        animator.SetTrigger("Activate");
+    }
+
+        public void HideActivityBarUI()
+    {
+        Animator animator = activityBar.GetComponent<Animator>();
         animator.SetTrigger("Disable");
     }
 

@@ -12,6 +12,9 @@ public class PettingActivity : IPetActivity
 
     public void StartActivity(PetStateManager pet)
     {
+        UIController.Instance.ShowActivityBarUI();
+        UIController.Instance.activityBar.value = 0;
+        UIController.Instance.activityBar.maxValue = requiredPettingAmount;
         Debug.Log("Started petting");
     }
 
@@ -71,6 +74,8 @@ public class PettingActivity : IPetActivity
     private void AddPettingProgress()
     {
         pettingProgress += pettingPerSwipe;
+        UIController.Instance.activityBar.value = pettingProgress;
+
         Debug.Log("Petting Progress: " + pettingProgress);
 
         if (pettingProgress >= requiredPettingAmount)
@@ -80,6 +85,7 @@ public class PettingActivity : IPetActivity
 
             pettingProgress = 0f; // Reset for next session
             PetActivityManager.Instance.ChangeActivity(null);
+            UIController.Instance.HideActivityBarUI();
         }
     }
 }
