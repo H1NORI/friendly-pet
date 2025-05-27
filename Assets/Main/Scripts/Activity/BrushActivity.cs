@@ -1,21 +1,21 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class PettingActivity : IPetActivity
+public class BrushActivity : IPetActivity
 {
-    private float pettingProgress = 0f;
-    public float requiredPettingAmount = 20f;
-    public float pettingPerSwipe = 1f;
+    private float brushingProgress = 0f;
+    public float requiredBrushingAmount = 20f;
+    public float brushingPerSwipe = 1f;
 
     private bool isTouchingPet = false;
-    public string Name => "Petting";
+    public string Name => "Brushing";
 
     public void StartActivity(PetStateManager pet)
     {
         UIController.Instance.ShowActivityBarUI();
         UIController.Instance.activityBar.value = 0;
-        UIController.Instance.activityBar.maxValue = requiredPettingAmount;
-        Debug.Log("Started petting");
+        UIController.Instance.activityBar.maxValue = requiredBrushingAmount;
+        Debug.Log("Started brushing");
     }
 
     public void UpdateActivity(PetStateManager pet)
@@ -38,7 +38,7 @@ public class PettingActivity : IPetActivity
 
     public void EndActivity(PetStateManager pet)
     {
-        Debug.Log("Ended petting");
+        Debug.Log("Ended brushing");
     }
 
     private void CheckTouch(PetStateManager pet, Vector2 screenPosition)
@@ -57,7 +57,7 @@ public class PettingActivity : IPetActivity
                         GameObject.Instantiate(PetActivityManager.Instance.pettingParticlePrefab, hit.point, Quaternion.identity);
                     }
 
-                    AddPettingProgress();
+                    AddBrushingProgress();
                 }
             }
             else
@@ -71,22 +71,23 @@ public class PettingActivity : IPetActivity
         }
     }
     
-    private void AddPettingProgress()
+    private void AddBrushingProgress()
     {
-        pettingProgress += pettingPerSwipe;
-        UIController.Instance.activityBar.value = pettingProgress;
+        brushingProgress += brushingPerSwipe;
+        UIController.Instance.activityBar.value = brushingProgress;
 
-        Debug.Log("Petting Progress: " + pettingProgress);
+        Debug.Log("Brushing Progress: " + brushingProgress);
 
-        if (pettingProgress >= requiredPettingAmount)
+        if (brushingProgress >= requiredBrushingAmount)
         {
             PetStateManager.Instance.Happiness += 10f;
             Debug.Log("Pet is happy!");
 
-            pettingProgress = 0f; // Reset for next session
+            brushingProgress = 0f; // Reset for next session
             PetActivityManager.Instance.ChangeActivity(null);
             UIController.Instance.HideActivityBarUI();
             UIController.Instance.HideActivityCancelZoneUI();
+            UIController.Instance.ShowAllButtons();
         }
     }
 }

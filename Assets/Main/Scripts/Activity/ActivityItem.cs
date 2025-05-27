@@ -1,16 +1,16 @@
 using UnityEngine;
 
+public enum ActivityType
+{
+    PettingActivity,
+    BrushActivity,
+    None
+}
+
 [System.Serializable]
 public class ActivityItem
 {
     public string name;
     public Sprite icon;
-    public enum Activity
-    {
-        PettingActivity,
-        BrushActivity,
-        None
-    };
-
-    public Activity activity;
+    public ActivityType activity;
 }

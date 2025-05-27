@@ -184,6 +184,7 @@ public class UIController : MonoBehaviour
             {
                 HideActivityUI();
                 ShowActivityCancelZoneUI();
+                StartActivity(activity);
             });
         }
 
@@ -203,6 +204,14 @@ public class UIController : MonoBehaviour
             {
                 spawnedFood = Instantiate(food.prefab, PetStateManager.Instance.transform.position + Vector3.forward, Quaternion.identity);
             }
+        }
+    }
+
+    private void StartActivity(ActivityItem activityItem)
+    {
+        if (PetActivityManager.Instance != null)
+        {
+            PetActivityManager.Instance.ChangeActivity(ActivityFactory.GetActivity(activityItem.activity));
         }
     }
 
