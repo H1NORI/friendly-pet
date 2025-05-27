@@ -8,6 +8,7 @@ public class PetActivityManager : MonoBehaviour
 
     public GameObject pettingParticlePrefab;
     public GameObject ballPrefab;
+    public Transform ballBounceTransform;
 
     void Awake()
     {

@@ -3,56 +3,69 @@ using UnityEngine.EventSystems;
 
 public class BallActivity : IPetActivity
 {
-    public string Name => "Ball Play";
+    public string Name => "Ball";
 
     private GameObject ballInstance;
-    private Transform petTransform;
-    private Vector3 startPoint;
-    private Vector3 endPoint;
-    private float travelTime = 2f;
-    private float elapsedTime = 0f;
-    private bool isBallMoving = false;
-    private bool isBounced = false;
+    private int currentBounces = 0;
+    public int maxBounces = 3;
+    public float travelDuration = 2.0f;
+    public float arcHeight = 1f;
 
-    private float maxClickDistance = 1.5f;
+    private bool isBallClickable = false;
+    private float moveTimer = 0f;
+    private Vector3 startPosition;
+    private Vector3 targetPosition;
+
+    private bool isBallMovingToPet = true;
 
     public void StartActivity(PetStateManager pet)
     {
-        Debug.Log("Started ball play");
+        UIController.Instance.ShowActivityBarUI();
+        UIController.Instance.activityBar.value = 0;
+        UIController.Instance.activityBar.maxValue = maxBounces;
+        Debug.Log("Started Ball Activity");
 
-        // Save pet position
-        petTransform = pet.transform;
+        if (PetActivityManager.Instance.ballPrefab != null)
+        {
+            ballInstance = GameObject.Instantiate(
+                PetActivityManager.Instance.ballPrefab,
+                Camera.main.transform.position + Camera.main.transform.forward * 0.2f,
+                Quaternion.identity
+            );
+        }
 
-        // Instantiate the ball
-        startPoint = Camera.main.transform.position + Camera.main.transform.forward * 1.5f;
-        endPoint = petTransform.position;
+        currentBounces = 0;
+        isBallMovingToPet = true;
+        BeginArcMovement(Camera.main.transform.position, PetActivityManager.Instance.ballBounceTransform.position);
 
-        ballInstance = GameObject.Instantiate(PetActivityManager.Instance.ballPrefab, startPoint, Quaternion.identity);
-
-        elapsedTime = 0f;
-        isBallMoving = true;
-        isBounced = false;
+        UIController.Instance.ShowActivityCancelZoneUI();
     }
 
     public void UpdateActivity(PetStateManager pet)
     {
         if (ballInstance == null) return;
 
-        // Handle ball movement
-        if (isBallMoving && !isBounced)
-        {
-            elapsedTime += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsedTime / travelTime);
-            ballInstance.transform.position = Vector3.Lerp(startPoint, endPoint, t);
+        moveTimer += Time.deltaTime;
+        float t = Mathf.Clamp01(moveTimer / travelDuration);
+        
+        Vector3 currentPosition = GetArcPoint(startPosition, targetPosition, arcHeight, t);
+        ballInstance.transform.position = currentPosition;
 
-            if (t >= 1f)
+        if (t >= 1f)
+        {
+            if (isBallMovingToPet)
             {
-                // Player failed to click in time
-                EndActivity(pet);
+                Vector3 returnTarget = Camera.main.transform.position + Camera.main.transform.forward * 0.2f;
+                isBallMovingToPet = false;
+                isBallClickable = false;
+                BeginArcMovement(ballInstance.transform.position, returnTarget);
+            }
+            else
+            {
+                isBallClickable = true;
             }
         }
 
-        // Handle tap/click on the ball
 #if UNITY_EDITOR
         if (Input.GetMouseButtonDown(0))
         {
@@ -68,34 +81,61 @@ public class BallActivity : IPetActivity
 
     private void TryBounceBall(Vector2 screenPosition)
     {
-        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
-            return;
+        if (!isBallClickable || ballInstance == null) return;
 
         Ray ray = Camera.main.ScreenPointToRay(screenPosition);
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            if (ballInstance != null && hit.collider.gameObject == ballInstance)
+            if (hit.collider.gameObject == ballInstance)
             {
-                // Bounce the ball back
-                isBounced = true;
-                startPoint = ballInstance.transform.position;
-                endPoint = Camera.main.transform.position + Camera.main.transform.forward * 1.5f;
-                elapsedTime = 0f;
-                PetStateManager.Instance.Happiness += 5f;
-                Debug.Log("Ball bounced!");
+                currentBounces++;
+                UIController.Instance.activityBar.value = currentBounces;
+                Debug.Log("Ball bounced! Count: " + currentBounces);
+
+                if (currentBounces >= maxBounces)
+                {
+                    PetActivityManager.Instance.ChangeActivity(null);
+                    return;
+                }
+
+                isBallClickable = false;
+                isBallMovingToPet = true;
+
+                BeginArcMovement(ballInstance.transform.position, PetActivityManager.Instance.ballBounceTransform.position);
             }
         }
     }
 
+    private void BeginArcMovement(Vector3 from, Vector3 to)
+    {
+        startPosition = from;
+        targetPosition = to;
+        moveTimer = 0f;
+    }
+
+    private float ParabolaEaseOut(float t)
+    {
+        return 4f * t * (1f - Mathf.Pow(t, 0.5f));
+    }
+
+    private Vector3 GetArcPoint(Vector3 start, Vector3 end, float height, float t)
+    {
+        Vector3 linear = Vector3.Lerp(start, end, t);
+        float arc = ParabolaEaseOut(t) * height;
+        return linear + Vector3.up * arc;
+    }
+
     public void EndActivity(PetStateManager pet)
     {
+        Debug.Log("Ended Ball Activity");
+
         if (ballInstance != null)
         {
-            GameObject.Destroy(ballInstance);
+            Object.Destroy(ballInstance);
         }
 
-        Debug.Log("Ended ball play");
-        PetActivityManager.Instance.ChangeActivity(null);
+        UIController.Instance.HideActivityBarUI();
         UIController.Instance.HideActivityCancelZoneUI();
+        UIController.Instance.ShowAllButtons();
     }
 }

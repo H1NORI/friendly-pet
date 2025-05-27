@@ -450,7 +450,7 @@ PrefabInstance:
     - target: {fileID: 3716833617999098428, guid: d538849e0d67f43358f33d83618969df,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -100
+      value: -150
       objectReference: {fileID: 0}
     - target: {fileID: 3716833617999098428, guid: d538849e0d67f43358f33d83618969df,
         type: 3}
@@ -2787,7 +2787,7 @@ PrefabInstance:
     - target: {fileID: 3716833617999098428, guid: d538849e0d67f43358f33d83618969df,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -100
+      value: -150
       objectReference: {fileID: 0}
     - target: {fileID: 3716833617999098428, guid: d538849e0d67f43358f33d83618969df,
         type: 3}
@@ -3189,7 +3189,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 87, y: -203.1}
+  m_AnchoredPosition: {x: 87, y: -250}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1468150421
@@ -4722,11 +4722,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6926402576394734159, guid: 9fedecbd1aa68924b816f15cb97e611a,
-        type: 3}
-      propertyPath: Hunger
-      value: 50.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

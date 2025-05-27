@@ -87,6 +87,7 @@ public class PettingActivity : IPetActivity
             PetActivityManager.Instance.ChangeActivity(null);
             UIController.Instance.HideActivityBarUI();
             UIController.Instance.HideActivityCancelZoneUI();
+            UIController.Instance.ShowAllButtons();
         }
     }
 }
