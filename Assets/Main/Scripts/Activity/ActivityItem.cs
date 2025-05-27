@@ -4,6 +4,7 @@ public enum ActivityType
 {
     PettingActivity,
     BrushActivity,
+    BallActivity,
     None
 }
 

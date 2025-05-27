@@ -7,6 +7,7 @@ public static class ActivityFactory
     {
         { ActivityType.PettingActivity, () => new PettingActivity() },
         { ActivityType.BrushActivity, () => new BrushActivity() },
+        { ActivityType.BallActivity, () => new BallActivity() },
         { ActivityType.None, () => null },
     };
 

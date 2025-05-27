@@ -4723,12 +4723,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6453427472456310257, guid: 9fedecbd1aa68924b816f15cb97e611a,
-        type: 3}
-      propertyPath: pettingParticlePrefab
-      value: 
-      objectReference: {fileID: 1949398963624892, guid: 8a88aece9bd66497fb9dea0c816f0981,
-        type: 3}
     - target: {fileID: 6926402576394734159, guid: 9fedecbd1aa68924b816f15cb97e611a,
         type: 3}
       propertyPath: Hunger

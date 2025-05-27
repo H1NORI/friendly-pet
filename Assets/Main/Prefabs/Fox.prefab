@@ -1171,7 +1171,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be74ccb8058b8441f9c02e622901942b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pettingParticlePrefab: {fileID: 1178894326743412, guid: 042f756de00cb5b4db4d23471365bf39,
+  pettingParticlePrefab: {fileID: 1949398963624892, guid: 8a88aece9bd66497fb9dea0c816f0981,
+    type: 3}
+  ballPrefab: {fileID: 4350874406377604858, guid: db6cb79803d99de41ae15f15a875d281,
     type: 3}
 --- !u!1 &4246927435662846628
 GameObject:

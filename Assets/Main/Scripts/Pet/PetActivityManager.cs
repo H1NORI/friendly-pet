@@ -7,6 +7,7 @@ public class PetActivityManager : MonoBehaviour
     private IPetActivity currentActivity;
 
     public GameObject pettingParticlePrefab;
+    public GameObject ballPrefab;
 
     void Awake()
     {
