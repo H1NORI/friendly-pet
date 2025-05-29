@@ -11,6 +11,7 @@ public class UIController : MonoBehaviour
     public GameObject feedingButton;
     public GameObject activityButton;
     public GameObject cameraButton;
+    public GameObject closeButtonPrefab;
 
     [Header("Panels")]
     public GameObject feedingPanel;
@@ -63,7 +64,7 @@ public class UIController : MonoBehaviour
         PopulateActivityUI();
 
         PopulateShopFooodUI();
-        PopulateShopActivityFUI();
+        PopulateShopActivityUI();
     }
 
     public void ShowFeedingUI()
@@ -225,6 +226,15 @@ public class UIController : MonoBehaviour
 
     private void PopulateFeedingUI()
     {
+        GameObject closeButtonObj = Instantiate(closeButtonPrefab, foodButtonContainer);
+        Button closeButton = closeButtonObj.GetComponent<Button>();
+
+        closeButton.onClick.AddListener(() =>
+        {
+            HideFeedingUI();
+            ShowAllButtons();
+        });
+
         foreach (var food in foodItems)
         {
             GameObject buttonObj = Instantiate(foodButtonPrefab, foodButtonContainer);
@@ -241,7 +251,6 @@ public class UIController : MonoBehaviour
             {
                 HideFeedingUI();
                 ShowFeedingCancelZoneUI();
-                // ShowAllButtons();
                 ShowFood(food);
             });
         }
@@ -254,6 +263,15 @@ public class UIController : MonoBehaviour
 
     private void PopulateActivityUI()
     {
+        GameObject closeButtonObj = Instantiate(closeButtonPrefab, activityButtonContainer);
+        Button closeButton = closeButtonObj.GetComponent<Button>();
+
+        closeButton.onClick.AddListener(() =>
+        {
+            HideActivityUI();
+            ShowAllButtons();
+        });
+
         foreach (var activity in activityItems)
         {
             GameObject buttonObj = Instantiate(activityButtonPrefab, activityButtonContainer);
@@ -286,7 +304,7 @@ public class UIController : MonoBehaviour
         {
             GameObject buttonObj = Instantiate(shopFoodPrefab, shopFoodContainer);
             Button button = buttonObj.GetComponent<Button>();
-            Image icon = buttonObj.GetComponentInChildren<Image>();
+            Image icon = buttonObj.GetComponentsInChildren<Image>()[1];
             icon.sprite = food.icon;
             TMP_Text[] texts = buttonObj.GetComponentsInChildren<TMP_Text>();
             if (texts.Length == 2)
@@ -295,13 +313,14 @@ public class UIController : MonoBehaviour
                 texts[1].text = food.descripion;
             }
 
+            if (InventoryManager.Instance.IsFoodOwned(food))
+            {
+                button.interactable = false;
+            }
+
             button.onClick.AddListener(() =>
             {
                 ShopManager.Instance.BuyFood(food);
-                // HideFeedingUI();
-                // ShowFeedingCancelZoneUI();
-                // ShowAllButtons();
-                // ShowFood(food);
             });
         }
 
@@ -312,13 +331,13 @@ public class UIController : MonoBehaviour
     }
 
 
-    private void PopulateShopActivityFUI()
+    private void PopulateShopActivityUI()
     {
         foreach (var activity in activityItems)
         {
             GameObject buttonObj = Instantiate(shopActivityPrefab, shopActivityContainer);
             Button button = buttonObj.GetComponent<Button>();
-            Image icon = buttonObj.GetComponentInChildren<Image>();
+            Image icon = buttonObj.GetComponentsInChildren<Image>()[1];
             icon.sprite = activity.icon;
             TMP_Text[] texts = buttonObj.GetComponentsInChildren<TMP_Text>();
             if (texts.Length == 2)
@@ -327,12 +346,14 @@ public class UIController : MonoBehaviour
                 texts[1].text = activity.descripion;
             }
 
+            if (InventoryManager.Instance.IsActivityOwned(activity))
+            {
+                button.interactable = false;
+            }
+
             button.onClick.AddListener(() =>
             {
                 ShopManager.Instance.BuyActivity(activity);
-                // HideActivityUI();
-                // ShowActivityCancelZoneUI();
-                // StartActivity(activity);
             });
         }
 
@@ -340,6 +361,38 @@ public class UIController : MonoBehaviour
         Vector2 anchoredPos = rectTransform.anchoredPosition;
         anchoredPos.y = -10000f;
         rectTransform.anchoredPosition = anchoredPos;
+    }
+
+    public void ReloadFoodInventoryUI()
+    {
+        ClearChildren(foodButtonContainer);
+        PopulateFeedingUI();
+    }
+
+    public void ReloadActivityInventoryUI()
+    {
+        ClearChildren(activityButtonContainer);
+        PopulateActivityUI();
+    }
+
+    public void ReloadShopFoodUI()
+    {
+        ClearChildren(shopFoodContainer);
+        PopulateShopFooodUI();
+    }
+
+    public void ReloadShopActivityUI()
+    {
+        ClearChildren(shopActivityContainer);
+        PopulateShopActivityUI();
+    }
+
+    public void ClearChildren(Transform parent)
+    {
+        foreach (Transform child in parent)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
     }
 
     private void ShowFood(FoodItem food)

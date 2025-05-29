@@ -19,6 +19,8 @@ public class ShopManager : MonoBehaviour
         {
             CurrencyManager.Instance.Spend(item.price);
             InventoryManager.Instance.AddFood(item);
+            UIController.Instance.ReloadFoodInventoryUI();
+            UIController.Instance.ReloadShopFoodUI();
         }
     }
 
@@ -28,6 +30,8 @@ public class ShopManager : MonoBehaviour
         {
             CurrencyManager.Instance.Spend(item.price);
             InventoryManager.Instance.AddActivity(item);
+            UIController.Instance.ReloadActivityInventoryUI();
+            UIController.Instance.ReloadShopActivityUI();
         }
     }
 }
