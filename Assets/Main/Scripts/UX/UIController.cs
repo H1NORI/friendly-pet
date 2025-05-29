@@ -39,15 +39,14 @@ public class UIController : MonoBehaviour
     [Header("Shop")]
 
     private int activeTab = 0;
+    public GameObject shopContainer;
+    public TMP_Text coinsText;
     public Transform shopFoodTab;
     public Transform shopActivityTab;
     public Transform shopFoodContainer;
     public Transform shopActivityContainer;
-
     public GameObject shopFoodPrefab;
     public GameObject shopActivityPrefab;
-
-
 
 
     void Awake()
@@ -126,14 +125,28 @@ public class UIController : MonoBehaviour
         Animator animator = activityCancelZone.GetComponent<Animator>();
         animator.SetTrigger("Activate");
     }
+
+    public void HideShopUI()
+    {
+        Animator animator = shopContainer.GetComponent<Animator>();
+        animator.SetTrigger("Disable");
+    }
+
+    public void ShowShopUI()
+    {
+        Animator animator = shopContainer.GetComponent<Animator>();
+        animator.SetTrigger("Activate");
+    }
+
+    public void UpdateCoinsText()
+    {
+        coinsText.text = $"{CurrencyManager.Instance.coins}";
+    }
+
     public void ToggleFoodTabUI(int tab)
     {
-        Debug.Log($"tab = {tab}, active tab = {activeTab}");
-
-
         if (tab == activeTab)
         {
-            Debug.Log($"skip");
             return;
         }
         else if (tab == 0 && activeTab != tab)
@@ -219,6 +232,11 @@ public class UIController : MonoBehaviour
             Image icon = buttonObj.GetComponent<Image>();
             icon.sprite = food.icon;
 
+            if (!InventoryManager.Instance.IsFoodOwned(food))
+            {
+                button.interactable = false;
+            }
+
             button.onClick.AddListener(() =>
             {
                 HideFeedingUI();
@@ -243,6 +261,11 @@ public class UIController : MonoBehaviour
             Image icon = buttonObj.GetComponent<Image>();
             icon.sprite = activity.icon;
 
+            if (!InventoryManager.Instance.IsActivityOwned(activity))
+            {
+                button.interactable = false;
+            }
+
             button.onClick.AddListener(() =>
             {
                 HideActivityUI();
@@ -266,15 +289,15 @@ public class UIController : MonoBehaviour
             Image icon = buttonObj.GetComponentInChildren<Image>();
             icon.sprite = food.icon;
             TMP_Text[] texts = buttonObj.GetComponentsInChildren<TMP_Text>();
-                        Debug.Log(texts.Length);
             if (texts.Length == 2)
             {
-                texts[0].text = food.name;
+                texts[0].text = $"{food.name} - {food.price}$";
                 texts[1].text = food.descripion;
             }
 
             button.onClick.AddListener(() =>
             {
+                ShopManager.Instance.BuyFood(food);
                 // HideFeedingUI();
                 // ShowFeedingCancelZoneUI();
                 // ShowAllButtons();
@@ -282,10 +305,10 @@ public class UIController : MonoBehaviour
             });
         }
 
-        // RectTransform rectTransform = foodButtonContainer.GetComponent<RectTransform>();
-        // Vector2 anchoredPos = rectTransform.anchoredPosition;
-        // anchoredPos.x = -10000f;
-        // rectTransform.anchoredPosition = anchoredPos;
+        RectTransform rectTransform = shopFoodContainer.GetComponent<RectTransform>();
+        Vector2 anchoredPos = rectTransform.anchoredPosition;
+        anchoredPos.y = -10000f;
+        rectTransform.anchoredPosition = anchoredPos;
     }
 
 
@@ -298,25 +321,25 @@ public class UIController : MonoBehaviour
             Image icon = buttonObj.GetComponentInChildren<Image>();
             icon.sprite = activity.icon;
             TMP_Text[] texts = buttonObj.GetComponentsInChildren<TMP_Text>();
-            Debug.Log(texts.Length);
             if (texts.Length == 2)
             {
-                texts[0].text = activity.name;
+                texts[0].text = $"{activity.name} - {activity.price}$";
                 texts[1].text = activity.descripion;
             }
 
             button.onClick.AddListener(() =>
             {
+                ShopManager.Instance.BuyActivity(activity);
                 // HideActivityUI();
                 // ShowActivityCancelZoneUI();
                 // StartActivity(activity);
             });
         }
 
-        // RectTransform rectTransform = foodButtonContainer.GetComponent<RectTransform>();
-        // Vector2 anchoredPos = rectTransform.anchoredPosition;
-        // anchoredPos.x = 10000f;
-        // rectTransform.anchoredPosition = anchoredPos;
+        RectTransform rectTransform = shopActivityContainer.GetComponent<RectTransform>();
+        Vector2 anchoredPos = rectTransform.anchoredPosition;
+        anchoredPos.y = -10000f;
+        rectTransform.anchoredPosition = anchoredPos;
     }
 
     private void ShowFood(FoodItem food)
