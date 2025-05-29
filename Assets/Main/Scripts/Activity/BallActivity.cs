@@ -94,6 +94,7 @@ public class BallActivity : IPetActivity
 
                 if (currentBounces >= maxBounces)
                 {
+                    PetStateManager.Instance.Happiness += 10f;
                     PetActivityManager.Instance.ChangeActivity(null);
                     return;
                 }

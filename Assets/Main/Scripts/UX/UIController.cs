@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -35,6 +36,18 @@ public class UIController : MonoBehaviour
     public GameObject activityCancelZone;
     public SliderController activitySliderController;
 
+    [Header("Shop")]
+
+    private int activeTab = 0;
+    public Transform shopFoodTab;
+    public Transform shopActivityTab;
+    public Transform shopFoodContainer;
+    public Transform shopActivityContainer;
+
+    public GameObject shopFoodPrefab;
+    public GameObject shopActivityPrefab;
+
+
 
 
     void Awake()
@@ -49,6 +62,9 @@ public class UIController : MonoBehaviour
 
         PopulateFeedingUI();
         PopulateActivityUI();
+
+        PopulateShopFooodUI();
+        PopulateShopActivityFUI();
     }
 
     public void ShowFeedingUI()
@@ -109,6 +125,53 @@ public class UIController : MonoBehaviour
     {
         Animator animator = activityCancelZone.GetComponent<Animator>();
         animator.SetTrigger("Activate");
+    }
+    public void ToggleFoodTabUI(int tab)
+    {
+        Debug.Log($"tab = {tab}, active tab = {activeTab}");
+
+
+        if (tab == activeTab)
+        {
+            Debug.Log($"skip");
+            return;
+        }
+        else if (tab == 0 && activeTab != tab)
+        {
+            ShowShopFoodTabUI();
+            HideShopActivityTabUI();
+            activeTab = tab;
+        }
+        else if (tab == 1 && activeTab != tab)
+        {
+            ShowShopActivityTabUI();
+            HideShopFoodTabUI();
+            activeTab = tab;
+        }
+    }
+
+    public void ShowShopFoodTabUI()
+    {
+        Animator animator = shopFoodTab.GetComponent<Animator>();
+        animator.SetTrigger("Activate");
+    }
+
+    public void ShowShopActivityTabUI()
+    {
+        Animator animator = shopActivityTab.GetComponent<Animator>();
+        animator.SetTrigger("Activate");
+    }
+
+    public void HideShopFoodTabUI()
+    {
+        Animator animator = shopFoodTab.GetComponent<Animator>();
+        animator.SetTrigger("Disable");
+    }
+
+    public void HideShopActivityTabUI()
+    {
+        Animator animator = shopActivityTab.GetComponent<Animator>();
+        animator.SetTrigger("Disable");
     }
 
     public void HideAllButtons()
@@ -192,6 +255,68 @@ public class UIController : MonoBehaviour
         Vector2 anchoredPos = rectTransform.anchoredPosition;
         anchoredPos.x = 10000f;
         rectTransform.anchoredPosition = anchoredPos;
+    }
+
+    private void PopulateShopFooodUI()
+    {
+        foreach (var food in foodItems)
+        {
+            GameObject buttonObj = Instantiate(shopFoodPrefab, shopFoodContainer);
+            Button button = buttonObj.GetComponent<Button>();
+            Image icon = buttonObj.GetComponentInChildren<Image>();
+            icon.sprite = food.icon;
+            TMP_Text[] texts = buttonObj.GetComponentsInChildren<TMP_Text>();
+                        Debug.Log(texts.Length);
+            if (texts.Length == 2)
+            {
+                texts[0].text = food.name;
+                texts[1].text = food.descripion;
+            }
+
+            button.onClick.AddListener(() =>
+            {
+                // HideFeedingUI();
+                // ShowFeedingCancelZoneUI();
+                // ShowAllButtons();
+                // ShowFood(food);
+            });
+        }
+
+        // RectTransform rectTransform = foodButtonContainer.GetComponent<RectTransform>();
+        // Vector2 anchoredPos = rectTransform.anchoredPosition;
+        // anchoredPos.x = -10000f;
+        // rectTransform.anchoredPosition = anchoredPos;
+    }
+
+
+    private void PopulateShopActivityFUI()
+    {
+        foreach (var activity in activityItems)
+        {
+            GameObject buttonObj = Instantiate(shopActivityPrefab, shopActivityContainer);
+            Button button = buttonObj.GetComponent<Button>();
+            Image icon = buttonObj.GetComponentInChildren<Image>();
+            icon.sprite = activity.icon;
+            TMP_Text[] texts = buttonObj.GetComponentsInChildren<TMP_Text>();
+            Debug.Log(texts.Length);
+            if (texts.Length == 2)
+            {
+                texts[0].text = activity.name;
+                texts[1].text = activity.descripion;
+            }
+
+            button.onClick.AddListener(() =>
+            {
+                // HideActivityUI();
+                // ShowActivityCancelZoneUI();
+                // StartActivity(activity);
+            });
+        }
+
+        // RectTransform rectTransform = foodButtonContainer.GetComponent<RectTransform>();
+        // Vector2 anchoredPos = rectTransform.anchoredPosition;
+        // anchoredPos.x = 10000f;
+        // rectTransform.anchoredPosition = anchoredPos;
     }
 
     private void ShowFood(FoodItem food)

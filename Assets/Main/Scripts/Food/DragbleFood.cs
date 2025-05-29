@@ -113,6 +113,8 @@ public class DraggableFood : MonoBehaviour
         if (collision.gameObject.CompareTag("Pet"))
         {
             hasBeenThrown = false;
+            UIController.Instance.HideFeedingCancelZoneUI();
+            UIController.Instance.ShowAllButtons();
             UIController.Instance.FeedPet(hungerBonus);
             PetStateManager.Instance.LookAtFood(null);
             Destroy(gameObject);

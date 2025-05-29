@@ -12,6 +12,7 @@ public enum ActivityType
 public class ActivityItem
 {
     public string name;
+    public string descripion;
     public Sprite icon;
     public ActivityType activity;
 }
