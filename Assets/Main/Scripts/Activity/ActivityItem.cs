@@ -15,6 +15,8 @@ public class ActivityItem
     public string name;
     public string descripion;
     public int price;
+    public int minCoins;
+    public int maxCoins;
     public Sprite icon;
     public ActivityType activity;
 }

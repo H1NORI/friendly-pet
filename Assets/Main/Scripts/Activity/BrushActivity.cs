@@ -8,7 +8,12 @@ public class BrushActivity : IPetActivity
     public float brushingPerSwipe = 1f;
 
     private bool isTouchingPet = false;
+    private int _minCoins = 2;
+    private int _maxCoins = 4;
+
     public string Name => "Brushing";
+    public int minCoins { get => _minCoins; set => _minCoins = value; }
+    public int maxCoins { get => _maxCoins; set => _maxCoins = value; }
 
     public void StartActivity(PetStateManager pet)
     {
@@ -81,6 +86,7 @@ public class BrushActivity : IPetActivity
         if (brushingProgress >= requiredBrushingAmount)
         {
             PetStateManager.Instance.Happiness += 10f;
+            PetActivityManager.Instance.DropCoins(minCoins, maxCoins);
             Debug.Log("Pet is happy!");
 
             brushingProgress = 0f; // Reset for next session

@@ -4,11 +4,16 @@ using UnityEngine.EventSystems;
 public class PettingActivity : IPetActivity
 {
     private float pettingProgress = 0f;
-    public float requiredPettingAmount = 20f;
+    public float requiredPettingAmount = 5f;
     public float pettingPerSwipe = 1f;
-
     private bool isTouchingPet = false;
+
+    private int _minCoins = 1;
+    private int _maxCoins = 2;
+
     public string Name => "Petting";
+    public int minCoins { get => _minCoins; set => _minCoins = value; }
+    public int maxCoins { get => _maxCoins; set => _maxCoins = value; }
 
     public void StartActivity(PetStateManager pet)
     {
@@ -81,6 +86,7 @@ public class PettingActivity : IPetActivity
         if (pettingProgress >= requiredPettingAmount)
         {
             PetStateManager.Instance.Happiness += 10f;
+            PetActivityManager.Instance.DropCoins(minCoins, maxCoins);
             Debug.Log("Pet is happy!");
 
             pettingProgress = 0f; // Reset for next session

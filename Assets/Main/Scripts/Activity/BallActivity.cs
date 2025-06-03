@@ -3,7 +3,12 @@ using UnityEngine.EventSystems;
 
 public class BallActivity : IPetActivity
 {
+    private int _minCoins = 3;
+    private int _maxCoins = 7;
+
     public string Name => "Ball";
+    public int minCoins { get => _minCoins; set => _minCoins = value; }
+    public int maxCoins { get => _maxCoins; set => _maxCoins = value; }
 
     private GameObject ballInstance;
     private int currentBounces = 0;
@@ -95,6 +100,7 @@ public class BallActivity : IPetActivity
                 if (currentBounces >= maxBounces)
                 {
                     PetStateManager.Instance.Happiness += 10f;
+                    PetActivityManager.Instance.DropCoins(minCoins, maxCoins);
                     PetActivityManager.Instance.ChangeActivity(null);
                     return;
                 }
