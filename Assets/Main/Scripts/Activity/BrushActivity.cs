@@ -44,6 +44,15 @@ public class BrushActivity : IPetActivity
     public void EndActivity(PetStateManager pet)
     {
         Debug.Log("Ended brushing");
+        PetStateManager.Instance.Happiness += 10f;
+        brushingProgress = 0f;
+
+        PetActivityManager.Instance.DropCoins(minCoins, maxCoins);
+        PetStateManager.Instance.SetTriggerAnimation("jump");
+
+        UIController.Instance.HideActivityBarUI();
+        UIController.Instance.HideActivityCancelZoneUI();
+        UIController.Instance.ShowAllButtons();
     }
 
     private void CheckTouch(PetStateManager pet, Vector2 screenPosition)
@@ -85,15 +94,7 @@ public class BrushActivity : IPetActivity
 
         if (brushingProgress >= requiredBrushingAmount)
         {
-            PetStateManager.Instance.Happiness += 10f;
-            PetActivityManager.Instance.DropCoins(minCoins, maxCoins);
-            Debug.Log("Pet is happy!");
-
-            brushingProgress = 0f; // Reset for next session
             PetActivityManager.Instance.ChangeActivity(null);
-            UIController.Instance.HideActivityBarUI();
-            UIController.Instance.HideActivityCancelZoneUI();
-            UIController.Instance.ShowAllButtons();
         }
     }
 }

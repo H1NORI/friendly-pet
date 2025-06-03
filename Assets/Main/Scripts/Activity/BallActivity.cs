@@ -99,8 +99,6 @@ public class BallActivity : IPetActivity
 
                 if (currentBounces >= maxBounces)
                 {
-                    PetStateManager.Instance.Happiness += 10f;
-                    PetActivityManager.Instance.DropCoins(minCoins, maxCoins);
                     PetActivityManager.Instance.ChangeActivity(null);
                     return;
                 }
@@ -140,6 +138,11 @@ public class BallActivity : IPetActivity
         {
             Object.Destroy(ballInstance);
         }
+
+        PetStateManager.Instance.Happiness += 10f;
+
+        PetActivityManager.Instance.DropCoins(minCoins, maxCoins);
+        PetStateManager.Instance.SetTriggerAnimation("jump");
 
         UIController.Instance.HideActivityBarUI();
         UIController.Instance.HideActivityCancelZoneUI();

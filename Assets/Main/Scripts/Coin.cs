@@ -32,5 +32,6 @@ public class Coin : MonoBehaviour
     {
         Debug.Log("Coin clicked!");
         CurrencyManager.Instance.AddCoins(1);
+        Destroy(gameObject);
     }
 }

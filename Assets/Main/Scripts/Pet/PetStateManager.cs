@@ -25,6 +25,7 @@ public class PetStateManager : MonoBehaviour
 
     private MultiAimConstraint multiAimConstraint;
     private RigBuilder rigBuilder;
+    private Animator animator;
 
     void Awake()
     {
@@ -34,9 +35,10 @@ public class PetStateManager : MonoBehaviour
     void Start()
     {
         ChangeState(idleState);
- 
+
         multiAimConstraint = FindObjectOfType<MultiAimConstraint>();
         rigBuilder = GetComponent<RigBuilder>();
+        animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -56,7 +58,7 @@ public class PetStateManager : MonoBehaviour
     {
         if (currentState != null)
             currentState.ExitState(this);
-        
+
         currentState = newState;
         currentState.EnterState(this);
     }
@@ -109,6 +111,15 @@ public class PetStateManager : MonoBehaviour
             return;
         }
 
+        if (food == null)
+        {
+            SetBoolAnimation("feeding", false);
+        }
+        else
+        {
+            SetBoolAnimation("feeding", true);
+        }
+
         multiAimConstraint.data.sourceObjects = functionGetSources(food);
         multiAimConstraint.weight = 1f;
         rigBuilder.Build();
@@ -121,5 +132,15 @@ public class PetStateManager : MonoBehaviour
         WeightedTransformArray sources = new WeightedTransformArray();
         sources.Add(new WeightedTransform(target, 1f));
         return sources;
+    }
+
+    public void SetTriggerAnimation(string name)
+    {
+        animator.SetTrigger(name);
+    }
+
+    public void SetBoolAnimation(string name, bool value)
+    {
+        animator.SetBool(name, value);
     }
 }
