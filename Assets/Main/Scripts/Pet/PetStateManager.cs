@@ -7,18 +7,25 @@ public class PetStateManager : MonoBehaviour
     public static PetStateManager Instance { get; private set; }
 
     [Header("Stats")]
-    [Range(0, 100)] public float Hunger = 100f;
-    [Range(0, 100)] public float Sleepiness = 100f;
-    [Range(0, 100)] public float Happiness = 100f;
+    [SerializeField, Range(0, 100)]
+    private float hunger = 100f;
+    public float Hunger { get; private set; }
+
+    [SerializeField, Range(0, 100)]
+    private float sleepiness = 100f;
+    public float Sleepiness { get; private set; }
+
+    [SerializeField, Range(0, 100)]
+    private float happiness = 100f;
+    public float Happiness { get; private set; }
 
     public float statDecayRate = 5f; // per minute
 
     [Header("States")]
-    private IPetState currentState;
+    public IPetState currentState;
     public IdleState idleState { get; private set; } = new IdleState();
     public HungryState hungryState { get; private set; } = new HungryState();
     public EatingState eatingState { get; private set; } = new EatingState();
-    public SleepyState sleepyState { get; private set; } = new SleepyState();
     public SleepingState sleepingState { get; private set; } = new SleepingState();
 
     private float statTimer;
@@ -30,11 +37,16 @@ public class PetStateManager : MonoBehaviour
     void Awake()
     {
         Instance = this;
+
+        Hunger = hunger;
+        Sleepiness = sleepiness;
+        Happiness = happiness;
     }
 
     void Start()
     {
         ChangeState(idleState);
+        UIController.Instance.UpdateAllProgressBars();
 
         multiAimConstraint = FindObjectOfType<MultiAimConstraint>();
         rigBuilder = GetComponent<RigBuilder>();
@@ -70,35 +82,51 @@ public class PetStateManager : MonoBehaviour
         Happiness = Mathf.Max(0, Happiness - (statDecayRate / 60f));
     }
 
-    public void Feed(float amount)
-    {
-        Hunger = Mathf.Min(100f, Hunger + amount);
-        ChangeState(eatingState);
-        UIController.Instance.UpdateAllProgressBars();
-    }
-
-    public void Sleep(float amount)
-    {
-        Sleepiness = Mathf.Min(100f, Sleepiness + amount);
-        ChangeState(sleepingState);
-    }
-
-    public void Play(float amount)
-    {
-        Happiness = Mathf.Min(100f, Happiness + amount);
-        ChangeState(idleState); // todo: may have PlayState later
-        UIController.Instance.UpdateAllProgressBars();
-    }
-
-    public void IncreaseHunger(int hungerBonus)
+    public void ChangeHunger(float hungerBonus)
     {
         if (Hunger + hungerBonus > 100)
         {
             Hunger = 100;
         }
+        else if (Hunger + hungerBonus < 0)
+        {
+            Hunger = 0;
+        }
         else
         {
             Hunger += hungerBonus;
+        }
+    }
+
+    public void ChangeHappiness(float happinessBonus)
+    {
+        if (Happiness + happinessBonus > 100)
+        {
+            Happiness = 100;
+        }
+        else if (Happiness + happinessBonus < 0)
+        {
+            Happiness = 0;
+        }
+        else
+        {
+            Happiness += happinessBonus;
+        }
+    }
+
+    public void ChangeSleepiness(float sleepinessBonus)
+    {
+        if (Sleepiness + sleepinessBonus > 100)
+        {
+            Sleepiness = 100;
+        }
+        else if (Sleepiness + sleepinessBonus < 0)
+        {
+            Sleepiness = 0;
+        }
+        else
+        {
+            Sleepiness += sleepinessBonus;
         }
     }
 

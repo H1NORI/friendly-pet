@@ -11,6 +11,8 @@ public class UIController : MonoBehaviour
     public GameObject feedingButton;
     public GameObject activityButton;
     public GameObject cameraButton;
+    public GameObject sleepButton;
+    public GameObject shopButton;
     public GameObject closeButtonPrefab;
 
     [Header("Panels")]
@@ -20,6 +22,7 @@ public class UIController : MonoBehaviour
     [Header("Bars")]
     public Slider hungerBar;
     public Slider happinessBar;
+    public Slider sleepinessBar;
     public Slider activityBar;
 
 
@@ -37,7 +40,10 @@ public class UIController : MonoBehaviour
     public GameObject activityCancelZone;
     public SliderController activitySliderController;
 
-    [Header("Shop")]
+    [Header("Sleeping Items")]
+    public GameObject sleepingCancelZone;
+
+    [Header("Shop Items")]
 
     private int activeTab = 0;
     public GameObject shopContainer;
@@ -85,7 +91,7 @@ public class UIController : MonoBehaviour
         animator.SetTrigger("Activate");
     }
 
-        public void HideActivityUI()
+    public void HideActivityUI()
     {
         Animator animator = activityPanel.GetComponent<Animator>();
         animator.SetTrigger("Disable");
@@ -97,7 +103,7 @@ public class UIController : MonoBehaviour
         animator.SetTrigger("Activate");
     }
 
-        public void HideActivityBarUI()
+    public void HideActivityBarUI()
     {
         Animator animator = activityBar.GetComponent<Animator>();
         animator.SetTrigger("Disable");
@@ -124,6 +130,18 @@ public class UIController : MonoBehaviour
     public void ShowActivityCancelZoneUI()
     {
         Animator animator = activityCancelZone.GetComponent<Animator>();
+        animator.SetTrigger("Activate");
+    }
+
+    public void HideSleepingCancelZoneUI()
+    {
+        Animator animator = sleepingCancelZone.GetComponent<Animator>();
+        animator.SetTrigger("Disable");
+    }
+
+    public void ShowSleepingCancelZoneUI()
+    {
+        Animator animator = sleepingCancelZone.GetComponent<Animator>();
         animator.SetTrigger("Activate");
     }
 
@@ -193,6 +211,8 @@ public class UIController : MonoBehaviour
         feedingButton.SetActive(false);
         activityButton.SetActive(false);
         cameraButton.SetActive(false);
+        sleepButton.SetActive(false);
+        shopButton.SetActive(false);
     }
 
     public void ShowAllButtons()
@@ -200,6 +220,8 @@ public class UIController : MonoBehaviour
         feedingButton.SetActive(true);
         activityButton.SetActive(true);
         cameraButton.SetActive(true);
+        sleepButton.SetActive(true);
+        shopButton.SetActive(true);
     }
 
     public void HideAllPanels()
@@ -208,20 +230,27 @@ public class UIController : MonoBehaviour
         activityPanel.SetActive(false);
     }
 
-    public void UpdateHungerProgressBars()
+    public void UpdateHungerProgressBar()
     {
         hungerBar.value = PetStateManager.Instance.Hunger;
     }
 
-    public void UpdateHappinessProgressBars()
+    public void UpdateHappinessProgressBar()
     {
         happinessBar.value = PetStateManager.Instance.Happiness;
     }
 
+    public void UpdateSleepinessProgressBar()
+    {
+        sleepinessBar.value = PetStateManager.Instance.Sleepiness;
+    }
+
+
     public void UpdateAllProgressBars()
     {
-        UpdateHungerProgressBars();
-        UpdateHappinessProgressBars();
+        UpdateHungerProgressBar();
+        UpdateHappinessProgressBar();
+        UpdateSleepinessProgressBar();
     }
 
     private void PopulateFeedingUI()
@@ -429,7 +458,19 @@ public class UIController : MonoBehaviour
     {
         if (PetStateManager.Instance != null)
         {
-            PetStateManager.Instance.IncreaseHunger(hungerBonus);
+            PetStateManager.Instance.ChangeHunger(hungerBonus);
+        }
+    }
+
+    public void ToggleSleepingState()
+    {
+        if (PetStateManager.Instance.currentState != PetStateManager.Instance.sleepingState)
+        {
+            PetStateManager.Instance.ChangeState(PetStateManager.Instance.sleepingState);
+        }
+        else
+        {
+            PetStateManager.Instance.ChangeState(PetStateManager.Instance.idleState);
         }
     }
 }

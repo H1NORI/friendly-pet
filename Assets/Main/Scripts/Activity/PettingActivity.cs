@@ -44,7 +44,7 @@ public class PettingActivity : IPetActivity
     public void EndActivity(PetStateManager pet)
     {
         Debug.Log("Ended petting");
-        PetStateManager.Instance.Happiness += 10f;
+        PetStateManager.Instance.ChangeHappiness(10f);
         pettingProgress = 0f;
 
         PetActivityManager.Instance.DropCoins(minCoins, maxCoins);

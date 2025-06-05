@@ -15,7 +15,7 @@ public class IdleState : IPetState
         }
         else if (pet.Sleepiness < 30f)
         {
-            pet.ChangeState(pet.sleepyState);
+            pet.ChangeState(pet.sleepingState);
         }
     }
 

@@ -44,7 +44,7 @@ public class BrushActivity : IPetActivity
     public void EndActivity(PetStateManager pet)
     {
         Debug.Log("Ended brushing");
-        PetStateManager.Instance.Happiness += 10f;
+        PetStateManager.Instance.ChangeHappiness(10f);
         brushingProgress = 0f;
 
         PetActivityManager.Instance.DropCoins(minCoins, maxCoins);

@@ -139,7 +139,7 @@ public class BallActivity : IPetActivity
             Object.Destroy(ballInstance);
         }
 
-        PetStateManager.Instance.Happiness += 10f;
+        PetStateManager.Instance.ChangeHappiness(10f);
 
         PetActivityManager.Instance.DropCoins(minCoins, maxCoins);
         PetStateManager.Instance.SetTriggerAnimation("jump");
